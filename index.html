@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Four-Bar Mechanism Renderer</title>
+    <style>
+      canvas {
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Four-Bar Mechanism Renderer</h1>
+
+    <label for="a">Crank Length (a):</label>
+    <input type="number" id="a" /><br />
+
+    <label for="b">Coupler Length (b):</label>
+    <input type="number" id="b" /><br />
+
+    <label for="c">Rocker Length (c):</label>
+    <input type="number" id="c" /><br />
+
+    <label for="d">Output Length (d):</label>
+    <input type="number" id="d" /><br />
+
+    <label for="theta">Fixed Angle (θ):</label>
+    <input type="number" id="theta" /><br />
+
+    <label for="theta1">Input Angle (θ1):</label>
+    <input type="number" id="theta1" /><br />
+
+    <button onclick="init()">Render</button>
+
+    <canvas id="canvas" width="500" height="500"></canvas>
+
+    <script>
+      var theta1;
+      var theta;
+      var a;
+      var b;
+      var c;
+      var d;
+
+      function init() {
+        a = parseFloat(document.getElementById("a").value);
+        b = parseFloat(document.getElementById("b").value);
+        c = parseFloat(document.getElementById("c").value);
+        d = parseFloat(document.getElementById("d").value);
+        theta = parseFloat(document.getElementById("theta").value);
+        theta1 = parseFloat(document.getElementById("theta1").value);
+
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+
+        // Clear the canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Move the origin to the middle of the canvas
+        var centerX = canvas.width / 2;
+        var centerY = canvas.height / 2;
+        ctx.translate(centerX, centerY);
+
+        // Calculate the positions
+        var x1 = a * Math.cos(theta1);
+        var y1 = -a * Math.sin(theta1);
+
+        var x2 = x1 + b * Math.cos(theta1 + theta);
+        var y2 = -y1 - b * Math.sin(theta1 + theta);
+
+        var x3 = x1 + d;
+        var y3 = -y1;
+
+        var x4 = x2 + c * Math.cos(theta1 + theta + Math.PI);
+        var y4 = -y2 - c * Math.sin(theta1 + theta + Math.PI);
+
+        // Draw the links
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(x1, y1);
+        ctx.lineTo(x3, y3);
+        ctx.lineTo(x4, y4);
+        ctx.stroke();
+
+        // Draw the joints
+        ctx.beginPath();
+        ctx.arc(0, 0, 5, 0, 2 * Math.PI);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(x1, y1, 5, 0, 2 * Math.PI);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(x3, y3, 5, 0, 2 * Math.PI);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(x4, y4, 5, 0, 2 * Math.PI);
+        ctx.fill();
+
+        // Resetthe translation
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        render();
+      }
+      function render() {
+        theta += 0.01;
+
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+
+        // Clear the canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Move the origin to the middle of the canvas
+        var centerX = canvas.width / 2;
+        var centerY = canvas.height / 2;
+        ctx.translate(centerX, centerY);
+
+        // Calculate the positions
+        var x1 = a * Math.cos(theta1);
+        var y1 = -a * Math.sin(theta1);
+
+        var x2 = x1 + b * Math.cos(theta1 + theta);
+        var y2 = -y1 - b * Math.sin(theta1 + theta);
+
+        var x3 = x1 + d;
+        var y3 = -y1;
+
+        var x4 = x2 + c * Math.cos(theta1 + theta + Math.PI);
+        var y4 = -y2 - c * Math.sin(theta1 + theta + Math.PI);
+
+        // Draw the links
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(x1, y1);
+        ctx.lineTo(x3, y3);
+        ctx.lineTo(x4, y4);
+        ctx.stroke();
+
+        // Draw the joints
+        ctx.beginPath();
+        ctx.arc(0, 0, 5, 0, 2 * Math.PI);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(x1, y1, 5, 0, 2 * Math.PI);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(x3, y3, 5, 0, 2 * Math.PI);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(x4, y4, 5, 0, 2 * Math.PI);
+        ctx.fill();
+
+        // Resetthe translation
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        requestAnimationFrame(render);
+      }
+    </script>
+  </body>
+</html>

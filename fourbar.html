@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Four-Bar Mechanism Renderer</title>
+    <style>
+      canvas {
+        border: 1px solid black;
+      }
+    </style>
+    <script defer src="./fourbar.js"></script>
+  </head>
+  <body>
+    <label for="a">Crank Length (a):</label>
+    <input type="number" id="a" /><br />
+
+    <label for="b">Coupler Length (b):</label>
+    <input type="number" id="b" /><br />
+
+    <label for="c">Follower Length (c):</label>
+    <input type="number" id="c" /><br />
+
+    <label for="d">Base Length (d):</label>
+    <input type="number" id="d" /><br />
+
+    <label for="theta1">Input Angle (θ1):</label>
+    <input type="number" id="theta1" /><br />
+    <button onclick="run()">Render</button>
+    <canvas id="canvas" width="500" height="500"></canvas>
+  </body>
+</html>
