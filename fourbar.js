@@ -1,14 +1,22 @@
+/* Linkage Types
+
+1 - Triple Rocker * Not done
+2 - Crank Rocker * Done
+3 - Double Crank * Done
+4 - Double Rocker * Not done
+*/
+
 // Crank Link
-var a = 100;
+var a = 0;
 
 // Coupler Link
-var b = 350;
+var b = 0;
 
 // Follower Link
-var c = 200;
+var c = 0;
 
 // Base Link
-var d = 150;
+var d = 0;
 
 var outputPoints = [];
 
@@ -21,9 +29,11 @@ var C;
 var D;
 var E;
 var F;
-var theta4;
-var theta3;
+var theta4 = 0;
+var theta3 = 0;
 var theta2 = 0;
+
+var isAnimating = false;
 
 var k1 = d / a;
 var k2 = d / c;
@@ -31,40 +41,61 @@ var k3 = (a * a - b * b + c * c + d * d) / (2 * a * c);
 var k4 = d / b;
 var k5 = (c * c - d * d - a * a - b * b) / (2 * a * b);
 
-const A_proj = b * b + c * c;
-const B_proj = 2 * b * c;
-
 function proj_method() {
+  var A_proj = b * b + c * c;
+  var B_proj = 2 * b * c;
   let r = d - a * Math.cos(theta2);
   let s = a * Math.sin(theta2);
   let f2 = r * r + s * s;
   let sigma = Math.acos((A_proj - f2) / B_proj);
   let g = b - c * Math.cos(sigma);
   let h = c * Math.sin(sigma);
+  console.log(h, r, g, s);
   theta3 = Math.atan2(h * r - g * s, g * r + h * s);
   theta4 = theta3 + sigma;
 }
 
-function run() {
-  /*
-  for (let i = 0; i < Math.PI / 2; i++) {
-    theta2 += 0.01;
-    Q = Math.cos(theta2);
-    A = k3 - k1 - (k2 - 1) * Q;
-    B = -2 * Math.sin(theta2);
-    C = k3 + k1 - (k2 + 1) * Q;
-    D = k5 - k1 + (k4 + 1) * Q;
-    E = B;
-    F = k5 + k1 + (k4 - 1) * Q;
-    theta4 = 2 * Math.atan2(-B - Math.sqrt(B * B - 4 * A * C), 2 * A);
-    theta3 = 2 * Math.atan2(-E - Math.sqrt(E * E - 4 * D * F), 2 * D);
-    let x4 = d + c * Math.cos(theta4);
-    let y4 = c * Math.sin(theta4);
-
-    outputPoints.push([x4, y4]);
+function drawCanvas() {
+  let bh = 1000;
+  let bw = 1000;
+  let p = 0;
+  var canvas = document.getElementById("canvas");
+  var context = canvas.getContext("2d");
+  for (var x = 0; x <= bw; x += 20) {
+    context.moveTo(0.5 + x + p, p);
+    context.lineTo(0.5 + x + p, bh + p);
   }
-*/
-  theta2 += 0.01;
+
+  for (var x = 0; x <= bh; x += 20) {
+    context.moveTo(p, 0.5 + x + p);
+    context.lineTo(bw + p, 0.5 + x + p);
+  }
+  context.strokeStyle = "#D3D3D3";
+  context.stroke();
+}
+
+function init() {
+  var canvas = document.getElementById("canvas");
+  var ctx = canvas.getContext("2d");
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawCanvas();
+}
+
+function renderLinks() {
+  var canvas = document.getElementById("canvas");
+  var ctx = canvas.getContext("2d");
+  // Crank Link
+  a = document.getElementById("a").value;
+
+  // Coupler Link
+  b = document.getElementById("b").value;
+
+  // Follower Link
+  c = document.getElementById("c").value;
+
+  // Base Link
+  d = document.getElementById("d").value;
 
   proj_method();
 
@@ -76,12 +107,10 @@ function run() {
   let y3 = y2 + b * Math.sin(theta3);
   let x4 = d + c * Math.cos(theta4);
   let y4 = c * Math.sin(theta4);
-  var canvas = document.getElementById("canvas");
-  var ctx = canvas.getContext("2d");
 
   // Clear the canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+  drawCanvas();
   // Move the origin to the middle of the canvas
   var centerX = canvas.width / 2;
   var centerY = canvas.height / 2;
@@ -97,7 +126,6 @@ function run() {
   ctx.lineTo(d, 0);
   ctx.lineTo(x1, y1);
   ctx.stroke();
-
   // Draw crank path
   ctx.beginPath();
   ctx.arc(x1, y1, a, 0, 2 * Math.PI);
@@ -125,11 +153,15 @@ function run() {
   ctx.arc(x4, y4, 5, 0, 2 * Math.PI);
   ctx.fill();
 
-  outputPoints = [];
   ctx.setTransform(1, 0, 0, 1, 0, 0);
-  requestAnimationFrame(run);
 
-  console.log(theta4);
+  if (isAnimating) {
+    theta2 += 0.01;
+    requestAnimationFrame(renderLinks);
+  }
 }
 
-//run();
+function run() {
+  isAnimating = !isAnimating;
+  renderLinks();
+}

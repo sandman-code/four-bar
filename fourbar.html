@@ -9,22 +9,23 @@
     </style>
     <script defer src="./fourbar.js"></script>
   </head>
-  <body>
+  <body onload="init()">
     <label for="a">Crank Length (a):</label>
-    <input type="number" id="a" /><br />
+    <input type="number" id="a" value="200" /><br />
 
     <label for="b">Coupler Length (b):</label>
-    <input type="number" id="b" /><br />
+    <input type="number" id="b" value="400" /><br />
 
     <label for="c">Follower Length (c):</label>
-    <input type="number" id="c" /><br />
+    <input type="number" id="c" value="200" /><br />
 
     <label for="d">Base Length (d):</label>
-    <input type="number" id="d" /><br />
+    <input type="number" id="d" value="400" /><br />
 
     <label for="theta1">Input Angle (θ1):</label>
-    <input type="number" id="theta1" /><br />
-    <button onclick="run()">Render</button>
-    <canvas id="canvas" width="500" height="500"></canvas>
+    <input type="number" id="theta1" value="0" /><br />
+    <button onclick="renderLinks()">Render</button>
+    <button onclick="run()">Animate</button>
+    <canvas id="canvas" width="1000" height="800"></canvas>
   </body>
 </html>
